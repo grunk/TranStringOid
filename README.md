@@ -19,7 +19,9 @@ Choose a project name, import your strings.xml files, select desired languages a
 
 To edit a translation click on the desired project. To get your translated string.xml , in the home page, click on a project then select the desired file.
 
-To delete a project simply delete the folder in appFolder/projects/
+To delete a project simply delete the folder in appFolder/projects/ .
+
+When translating  : an empty translation will be set to the same string than the original file.
 
 ### Screenshot
 
@@ -51,6 +53,8 @@ Only handle simple strings file which looks like :
 ```
 
 Extras attributes are currently not handled (feel free to add it :) ).
+
+Original file and translated one will have the same structure.
 
 High number of translations will probably break the ui.
 
