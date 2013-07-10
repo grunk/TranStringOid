@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bootstrap, from Twitter</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="Olivier ROGER">
+        <base href="<?php echo $url ?>" />
+        <!-- Le styles -->
+        <link href="pub/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body {
+                padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+            }
+        </style>
+        <link href="pub/css/bootstrap-responsive.min.css" rel="stylesheet">
+
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+          <script src="../assets/js/html5shiv.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="brand" href="index">AndroString</a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav">
+                            <li class="active"><a href="index">Home</a></li>
+                            <li><a href="about">About</a></li>
+                        </ul>
+                    </div><!--/.nav-collapse -->
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+
+            <h1>Start new translation project</h1>
+            <form action="index/add" method="post" class="form-horizontal" enctype="multipart/form-data">
+                <div class="control-group">
+                    <label class="control-label" for="name">Project name</label>
+                    <div class="controls">
+                        <input type="text" name="name" id="name" placeholder="Name" />
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="file">Original strings file</label>
+                    <div class="controls">
+                        <input type="file" id="file" name="files[]" />
+                        <input type="hidden" name="MAX_FILE_SIZE" value="1024000">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="lang">Translation(s)</label>
+                    <div class="controls">
+                        <select id="lang" name="lang[]" multiple size="8">
+                            <option value="bg">Bulgarian</option>
+                            <option value="zh">Chinese</option>
+                            <option value="hr">Croatian</option>
+                            <option value="cz">Czech</option>
+                            <option value="dk">Danish</option>
+                            <option value="nl">Dutch</option>
+                            <option value="en">English</option>
+                            <option value="et">Estonian</option>
+                            <option value="fi">Finnish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="gr">Greek</option>
+                            <option value="hu">Hungarian</option>
+                            <option value="id">Indonesian</option>
+                            <option value="it">Italian</option>
+                            <option value="jp">Japanese</option>
+                            <option value="kr">Korean</option>
+                            <option value="lt">Lithuanian</option>
+                            <option value="no">Norwegian</option>
+                            <option value="pl">Polish</option>
+                            <option value="pt">Portuguese</option>
+                            <option value="ru">Russian</option>
+                            <option value="sl">Slovenian</option>
+                            <option value="es">Spanish</option>
+                            <option value="se">Swedish</option>
+                            <option value="th">Thai</option>
+                            <option value="ua">Ukrainian</option>
+
+                        </select>
+                        <br /><br />
+                        <button type="submit" class="btn">Create</button>
+                    </div>
+                </div>
+            </form>
+            <hr />
+            <h1>Existing projects</h1>
+            
+            <div class="accordion" id="accordion">
+                
+                <?php
+                if (!empty($folders))
+                {
+                    foreach ($folders as $dir) {
+echo <<<HTML
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse-$dir">
+                                    $dir
+                                </a>
+                            </div>
+                            <div id="collapse-$dir" class="accordion-body collapse">
+                                <div class="accordion-inner">
+                                    <a href="projects/view/name/$dir" class="btn">Edit Translations</a>
+                                    <ul id="content-$dir" class="dlfile" data-project="$dir">
+                                    
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+HTML;
+                    }
+                }
+                ?>
+            </div>
+        </div> <!-- /container -->
+        <script type="text/javascript" src="pub/js/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript" src="pub/js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+            $('#accordion').collapse({
+                toggle: false
+            });
+            
+            $('#accordion').on('show',function(e){
+                var name = $(e.target).find('.dlfile').data('project');
+                var container = $('#content-'+name);
+                $.post('projects/getFiles',{project: name},function(data){
+                    container.append('<li><a href="projects/download/p/'+name+'">Default string.xml</a></li>');
+                    $.each(data,function(k,v){
+                        container.append('<li><a href="projects/download/p/'+name+'/l/'+v+'"><img src="pub/img/flags/'+v+'.png" /> strings.xml</a></li>');
+                    });
+                },'json');
+            });
+        </script>
+    </body>
+</html>
